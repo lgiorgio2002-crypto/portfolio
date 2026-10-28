@@ -1,0 +1,1218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lorenzo Giorgio &middot; AI &amp; Strategy</title>
+<meta name="description" content="Lorenzo Giorgio, AI and strategy consulting. Business problems solved with AI that people actually use: results and cases from Emma, The Sleep Company, and a local AI agent built from scratch.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lgiorgio2002-crypto.github.io/">
+<meta property="og:title" content="Lorenzo Giorgio &middot; AI &amp; Strategy">
+<meta property="og:description" content="Lorenzo Giorgio, AI and strategy consulting. Business problems solved with AI that people actually use: results and cases from Emma, The Sleep Company, and a local AI agent built from scratch.">
+<meta property="og:image" content="https://lgiorgio2002-crypto.github.io/surf.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%226%22%20fill%3D%22%230b1f3a%22/%3E%3Cg%20fill%3D%22%238fd3e8%22%3E%3Crect%20x%3D%225%22%20y%3D%2210%22%20width%3D%222.4%22%20height%3D%2216%22/%3E%3Crect%20x%3D%2210%22%20y%3D%226%22%20width%3D%222.4%22%20height%3D%2220%22/%3E%3Crect%20x%3D%2215%22%20y%3D%2212%22%20width%3D%222.4%22%20height%3D%2214%22/%3E%3Crect%20x%3D%2220%22%20y%3D%228%22%20width%3D%222.4%22%20height%3D%2218%22/%3E%3Crect%20x%3D%2225%22%20y%3D%2214%22%20width%3D%222.4%22%20height%3D%2212%22/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Marcellus&family=Figtree:wght@400;500&display=swap">
+<style>
+html, body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: one-screen "session" in seven scenes, from the beach to deep water and back to the sand.
+   Photos and type redrawn as vertical line-scans on canvas; scenes change behind a curtain of rising bars;
+   the Emma cases live on the floors of a 3D model of the Lumnia building (Emma's Lisbon office).
+   A deliberate single visual world (the Atlantic), so no light/dark swap. Every colour is set explicitly. */
+:root {
+  --deep: #0b1f3a;
+  --abyss: #071528;
+  --atlantic: #1d4e89;
+  --teal: #2f6d88;
+  --mist: #b9d7e4;
+  --text: #d7e3ea;
+  --foam: #f5f7f6;
+  --glacier: #8fd3e8;
+  --ink: #0b1f3a;
+  --muted: rgba(215, 227, 234, .72);
+  --line: rgba(245, 247, 246, .18);
+
+  --f-wide: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --f-serif: "Marcellus", "Trajan Pro", Georgia, serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --gl: max(16px, env(safe-area-inset-left, 0px));
+  --gr: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--deep); color: var(--text); font: 400 16px/1.55 var(--f-body); overflow: hidden; overscroll-behavior: none; }
+h1, h2, h3 { margin: 0; font-weight: 400; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--glacier); outline-offset: 3px; border-radius: 6px; }
+
+.app { position: relative; height: 100%; overflow: hidden; isolation: isolate; background: var(--deep); }
+.label { font: 400 .68rem/1.35 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; }
+.serif { font-family: var(--f-serif); text-transform: uppercase; letter-spacing: .01em; }
+.muted { color: var(--muted); }
+.acc { color: var(--mist); }
+
+/* ---------- loader ---------- */
+.loader { position: absolute; inset: 0; z-index: 80; color: var(--mist); cursor: pointer; }
+.loader .lbg { position: absolute; inset: 0; background: var(--deep); }
+.loader canvas { position: absolute; display: block; }
+#loadScan { left: -24px; top: -24px; width: calc(100% + 48px); height: calc(100% + 48px); -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 80%); mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 80%); }
+.loader .ln { display: block; overflow: hidden; }
+.loader .ln > span { display: inline-block; }
+.loader p { text-shadow: 0 1px 10px rgba(7,21,40,.6); }
+.s-home.pre .inner, .s-home.pre .shade, .s-home.pre .cue { opacity: 0; }
+#loadName { left: var(--gl); right: var(--gr); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: calc(100% - var(--gl) - var(--gr)); height: 17vw; max-height: 180px; }
+.loader .lt { position: absolute; left: var(--gl); top: calc(22% + env(safe-area-inset-top, 0px)); }
+.loader .lb { position: absolute; left: var(--gl); top: calc(22% + 52px + env(safe-area-inset-top, 0px)); }
+.loader .rb { position: absolute; right: var(--gr); top: calc(22% - 40px + env(safe-area-inset-top, 0px)); text-align: right; }
+.loader .pct { font: 400 clamp(2rem, 5vw, 3.4rem)/1 var(--f-serif); color: var(--foam); display: block; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+
+/* ---------- chrome ---------- */
+.top {
+  position: absolute; z-index: 60; left: 0; right: 0; top: 0; pointer-events: none;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) var(--gr) 0 var(--gl);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  color: var(--text); transition: color .4s;
+}
+.top > * { pointer-events: auto; }
+.top .brand { text-decoration: none; justify-self: start; display: flex; gap: 12px; align-items: center; }
+.top .brand svg { width: 28px; height: 22px; display: block; }
+.top .where { justify-self: center; }
+.top .right { justify-self: end; display: flex; gap: 16px; align-items: center; }
+.pill { cursor: pointer; border: 0; border-radius: 999px; padding: 10px 16px; background: var(--ink); color: var(--mist); font: 400 .66rem/1 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.app.ui-ink .top { color: var(--ink); }
+.app.low-ink .ticks button i { background: var(--ink); }
+.app.low-ink .counter { color: var(--ink); }
+@media (max-width: 700px) { .top .where { display: none; } .top { grid-template-columns: 1fr auto; } }
+
+.ticks { position: absolute; z-index: 60; left: var(--gl); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: flex-end; gap: 3px; height: 26px; }
+.ticks button { cursor: pointer; background: none; border: 0; padding: 0 3px; height: 100%; display: flex; align-items: flex-end; }
+.ticks button i { display: block; width: 2px; height: 8px; background: var(--foam); opacity: .55; transition: height .35s, opacity .35s; }
+.ticks button[aria-current="true"] i { height: 24px; opacity: 1; }
+.ticks button:hover i { opacity: 1; height: 16px; }
+.counter { position: absolute; z-index: 60; right: var(--gr); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); font-variant-numeric: tabular-nums; transition: color .4s; }
+
+#wipe { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 70; pointer-events: none; display: block; }
+
+/* ---------- scenes ---------- */
+.scene { position: absolute; inset: 0; z-index: 10; visibility: hidden; overflow: hidden; background: var(--deep); }
+.scene.active { visibility: visible; }
+.inner {
+  position: relative; z-index: 2; width: 100%; height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  display: flex; flex-direction: column;
+  padding-block: clamp(72px, 11vh, 120px) clamp(64px, 10vh, 110px);
+  padding-left: var(--gl); padding-right: var(--gr);
+}
+.inner::-webkit-scrollbar { display: none; }
+.frame { width: 100%; max-width: 1240px; margin: auto; }
+.h-xl { font: 400 clamp(2.2rem, 5.6vw, 4.8rem)/1 var(--f-serif); text-transform: uppercase; color: var(--foam); }
+.h-xl .w, .mani .w { display: inline-block; }
+.lede { margin-top: 16px; max-width: 56ch; color: var(--muted); }
+.scan-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; pointer-events: none; }
+
+/* S0 home (photo) */
+.s-home { background: #6f98c4; }
+.s-home .photo { position: absolute; inset: -24px; z-index: 0; }
+.s-home .photo img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 62%; display: block; }
+.s-home .shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(245,247,246,.16) 0%, rgba(245,247,246,0) 30%, rgba(11,31,58,0) 46%, rgba(11,31,58,.72) 100%); }
+.s-home .inner { padding-top: calc(70px + env(safe-area-inset-top, 0px)); }
+.s-home .frame { margin: 0 auto; height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 18px; }
+.home-top { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 28px; align-items: start; color: var(--ink); }
+#heroName { width: 100%; height: clamp(54px, 8.6vw, 128px); display: block; }
+.home-top .label { margin-bottom: 10px; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding-top: 18px; }
+.stat b { display: block; font: 400 clamp(1.9rem, 3.6vw, 3.2rem)/1 var(--f-serif); color: var(--ink); }
+.stat b small { font-size: .5em; margin-right: .2em; }
+.stat > span { display: block; margin-top: 8px; }
+.home-bottom { display: flex; justify-content: space-between; align-items: end; gap: 24px; color: var(--foam); }
+.home-h { font: 400 clamp(2rem, 4.6vw, 3.9rem)/.98 var(--f-serif); text-transform: uppercase; max-width: 14ch; }
+.home-h .w { display: inline-block; }
+.tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.tag b { display: inline-block; background: var(--foam); color: var(--ink); padding: 3px 6px 2px; font-weight: 400; }
+.tag span { display: block; margin-top: 3px; }
+.circle { position: relative; width: 168px; height: 168px; flex: none; cursor: pointer; border: 0; background: none; padding: 0; color: var(--foam); }
+.circle svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.circle .ring { transform-origin: 50% 50%; transform-box: fill-box; }
+.circle .mid { position: absolute; inset: 0; display: grid; place-items: center; font: 400 .7rem/1.3 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; text-align: center; }
+@media (max-width: 820px) {
+  .home-top { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .stats { padding-top: 6px; }
+  .home-bottom { flex-direction: column; align-items: flex-start; }
+  .circle { width: 118px; height: 118px; align-self: flex-end; margin-top: -40px; }
+}
+
+/* S1 manifesto */
+.s-mani { background: var(--atlantic); }
+.s-mani .frame { text-align: center; }
+.mani { font: 400 clamp(1.6rem, 3.5vw, 3.1rem)/1.12 var(--f-serif); text-transform: uppercase; color: var(--foam); max-width: 23ch; margin: 18px auto 0; }
+.mani .w { margin: 0 .12em; }
+.s-mani .lede { margin: 24px auto 0; text-align: center; }
+.pill-light { display: inline-block; margin-top: 28px; cursor: pointer; border: 0; border-radius: 999px; padding: 13px 22px; background: var(--mist); color: var(--ink); font: 400 .66rem/1 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; }
+#swellCanvas { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 22%; z-index: 1; display: block; pointer-events: none; }
+
+/* S2 numbers */
+.s-nums { background: #143f70; }
+.nums { margin-top: clamp(28px, 5vh, 56px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.num { padding: 22px 20px 6px 0; min-width: 0; }
+.num + .num { padding-left: 20px; border-left: 1px solid var(--line); }
+.num b { display: block; font: 400 clamp(2.6rem, 5.8vw, 5rem)/.95 var(--f-serif); color: var(--foam); font-variant-numeric: tabular-nums; }
+.num .label { display: block; margin-top: 14px; color: var(--mist); }
+.num p { margin-top: 10px; font-size: .93rem; color: var(--muted); }
+@media (max-width: 820px) {
+  .nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .num:nth-child(3) { padding-left: 0; border-left: 0; }
+  .num:nth-child(n+3) { border-top: 1px solid var(--line); margin-top: 12px; }
+}
+
+/* S3 Emma building */
+.s-emma { background: radial-gradient(120% 90% at 70% 60%, #123462 0%, var(--deep) 60%, var(--abyss) 100%); }
+.emma-3d { position: absolute; inset: 0; z-index: 1; touch-action: none; cursor: grab; }
+.emma-3d.dragging { cursor: grabbing; }
+.emma-3d canvas { width: 100%; height: 100%; display: block; }
+.emma-3d .scanlines { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, rgba(7,21,40,.28) 0 1px, rgba(7,21,40,0) 1px 4px); mix-blend-mode: multiply; }
+.emma-3d::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(7,21,40,.92) 0%, rgba(7,21,40,.55) 30%, rgba(7,21,40,0) 52%); }
+.pins { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.pin { position: absolute; left: 0; top: 0; white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 0; color: var(--foam); transform: translate(-9999px, 0); }
+.pin i { width: 1px; height: 28px; background: currentColor; display: block; }
+.pin b { font-weight: 400; background: var(--glacier); color: var(--ink); padding: 4px 7px 3px; }
+.s-emma .inner { pointer-events: none; }
+.emma-frame { margin: 0 auto; height: 100%; display: grid; grid-template-columns: minmax(0, 360px) 1fr minmax(0, 380px); gap: 24px; align-items: end; }
+.emma-side { pointer-events: auto; align-self: center; }
+.emma-side .h-xl { font-size: clamp(2rem, 4.2vw, 3.6rem); }
+.caselist { margin-top: 22px; display: grid; border-top: 1px solid var(--line); max-height: 44vh; overflow-y: auto; scrollbar-width: thin; }
+.ctab { cursor: pointer; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 9px 0; display: flex; gap: 12px; align-items: baseline; color: var(--muted); }
+.ctab .n { font: 400 .62rem/1 var(--f-wide); letter-spacing: .08em; width: 22px; flex: none; }
+.ctab .t { font: 400 1.02rem/1.15 var(--f-serif); text-transform: uppercase; }
+.ctab .lead { font: 400 .56rem/1 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; color: var(--glacier); margin-left: auto; flex: none; }
+.ctab[aria-selected="true"] { color: var(--foam); }
+.ctab[aria-selected="true"] .n { color: var(--glacier); }
+.emma-card {
+  pointer-events: auto; grid-column: 3; align-self: end; max-height: calc(100% - 20px); overflow-y: auto; scrollbar-width: thin;
+  background: rgba(7, 21, 40, .78); backdrop-filter: blur(10px); border: 1px solid var(--line); padding: 20px 22px 22px;
+}
+.emma-card .k { color: var(--mist); }
+.emma-card h3 { margin-top: 8px; font: 400 1.5rem/1.05 var(--f-serif); text-transform: uppercase; color: var(--foam); }
+.emma-card .big { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.emma-card .big b { font: 400 clamp(2.4rem, 4vw, 3.4rem)/.95 var(--f-serif); color: var(--glacier); }
+.emma-card .big .label { color: var(--muted); }
+.emma-card .impact { margin-top: 12px; font-size: .95rem; color: var(--text); }
+.emma-card figure { margin: 14px 0 0; }
+.emma-card figure svg { width: 100%; height: auto; display: block; overflow: visible; }
+.emma-card figure text { font-family: var(--f-wide); }
+.emma-card figcaption { margin-top: 6px; color: var(--muted); }
+.emma-card dl { margin: 14px 0 0; display: grid; gap: 10px; }
+.emma-card dt { color: var(--mist); }
+.emma-card dd { margin: 3px 0 0; font-size: .9rem; color: var(--muted); }
+.judgment { margin-top: 14px; background: var(--mist); color: var(--ink); padding: 12px 14px; font-size: .93rem; }
+.judgment .label { display: block; margin-bottom: 5px; }
+.emma-note { margin-top: 14px; color: var(--muted); }
+.no3d .emma-3d { display: none; }
+@media (max-width: 1100px) { .emma-frame { grid-template-columns: minmax(0, 340px) 1fr minmax(0, 380px); } }
+@media (max-width: 900px) {
+  .emma-3d { inset: 0 0 auto 0; height: 46%; }
+  .emma-3d::before { background: linear-gradient(0deg, rgba(7,21,40,.9) 0%, rgba(7,21,40,0) 40%); }
+  .s-emma .inner { pointer-events: auto; padding-top: 46vh; }
+  .emma-frame { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .emma-card { grid-column: auto; max-height: none; }
+  .caselist { max-height: none; }
+}
+
+/* S4 board */
+.s-board { background: #0a1a33; }
+.board { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.facts { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; color: var(--muted); font-size: .95rem; }
+.facts li::before { content: "\2014"; color: var(--mist); margin-right: 10px; }
+.also { margin-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.also h3 { margin-top: 6px; font: 400 1.1rem/1.1 var(--f-serif); text-transform: uppercase; color: var(--foam); }
+.also p { margin-top: 4px; font-size: .88rem; color: var(--muted); }
+.also a { color: var(--glacier); font-size: .86rem; }
+.meters { display: grid; gap: 18px; }
+.meter-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 8px; }
+.meter-top b { font: 400 1.35rem/1 var(--f-serif); color: var(--foam); white-space: nowrap; }
+.meter { display: flex; gap: 3px; height: 22px; align-items: flex-end; }
+.meter i { flex: 1; height: 100%; background: var(--line); transform-origin: 50% 100%; }
+.meter i.was { background: rgba(185,215,228,.5); }
+.meter i.on { background: var(--foam); }
+@media (max-width: 860px) { .board { grid-template-columns: minmax(0, 1fr); } }
+
+/* S5 method */
+.s-method { background: var(--abyss); }
+.method { margin-top: clamp(24px, 4vh, 44px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.m { padding: 20px 20px 0 0; min-width: 0; }
+.m + .m { padding-left: 20px; border-left: 1px solid var(--line); }
+.m .label { color: var(--mist); }
+.m h3 { margin-top: 12px; font: 400 clamp(1.3rem, 2.2vw, 1.8rem)/1.05 var(--f-serif); text-transform: uppercase; color: var(--foam); }
+.m p { margin-top: 10px; font-size: .93rem; color: var(--muted); }
+@media (max-width: 900px) { .method { grid-template-columns: repeat(2, minmax(0, 1fr)); } .m:nth-child(3) { padding-left: 0; border-left: 0; } .m:nth-child(n+3) { margin-top: 18px; border-top: 1px solid var(--line); } }
+@media (max-width: 520px) { .method { grid-template-columns: minmax(0, 1fr); } .m, .m + .m { padding-left: 0; border-left: 0; } .m + .m { margin-top: 18px; border-top: 1px solid var(--line); } }
+
+/* S6 contact (sand) */
+.s-contact { background: linear-gradient(180deg, #cfe3ec 0%, #b9d7e4 100%); color: var(--ink); }
+.s-contact .label { color: var(--ink); }
+#talkName { width: 100%; height: clamp(64px, 11vw, 170px); display: block; margin-top: 10px; }
+.contact-grid { margin-top: clamp(20px, 4vh, 40px); display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); gap: 24px; border-top: 2px solid var(--ink); padding-top: 20px; }
+.contact-grid > div { min-width: 0; }
+.contact-grid ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.contact-grid li { font-size: .95rem; line-height: 1.4; }
+.contact-grid small { display: block; color: #3b4a5c; font-size: .84rem; }
+.line { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 12px; }
+.line .val { font: 400 clamp(1.05rem, 1.7vw, 1.35rem)/1.2 var(--f-serif); overflow-wrap: anywhere; user-select: all; }
+.copy { cursor: pointer; border: 1px solid var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 400 .6rem/1 var(--f-wide); letter-spacing: .08em; text-transform: uppercase; }
+.book { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.book a { text-decoration: none; }
+.book .pill { padding: 13px 20px; }
+.links { margin-top: 14px; display: grid; gap: 8px; }
+.links a { font-size: .95rem; }
+.fine { margin-top: 18px; color: #3b4a5c; }
+@media (max-width: 900px) { .contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.sr { position: absolute; left: -9999px; }
+.wm { display: inline-block; overflow: hidden; vertical-align: top; padding: .06em 0 .12em; margin: -.06em 0 -.12em; position: relative; }
+.wm > .w { display: inline-block; }
+#glints { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: block; }
+.cue { position: absolute; z-index: 3; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--foam); }
+.cue i { width: 1px; height: 34px; background: currentColor; transform-origin: 50% 0; display: block; }
+@media (max-width: 820px) { .cue { display: none; } }
+.tcard { position: absolute; inset: 0; z-index: 72; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; pointer-events: none; opacity: 0; color: var(--foam); text-align: center; padding-left: var(--gl); padding-right: var(--gr); }
+.tcard .tname { font: 400 clamp(2.4rem, 6vw, 5.4rem)/1 var(--f-serif); text-transform: uppercase; display: block; }
+.tcard .label { display: block; }
+</style>
+
+</head>
+<body>
+<div class="app ui-ink" id="app">
+
+  <!-- loader -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="lbg" id="lbg"></div>
+    <canvas id="loadScan"></canvas>
+    <p class="label lt"><span class="ln"><span>I am the Atlantic, at low tide</span></span><span class="ln"><span>see you in the lineup</span></span></p>
+    <p class="label lb"><span class="ln"><span>AI &amp; strategy</span></span><span class="ln"><span>consulting &mdash; portfolio</span></span></p>
+    <p class="label rb"><span class="ln"><span class="pct"><span id="pct">0</span>%</span></span><span class="ln"><span>Paddling out</span></span><span class="ln"><span>click to skip</span></span></p>
+    <canvas id="loadName"></canvas>
+  </div>
+
+  <header class="top">
+    <a class="brand label" href="#home" data-go="0" aria-label="Lorenzo Giorgio, back to start">
+      <svg viewBox="0 0 28 22" aria-hidden="true"><g fill="currentColor"><rect x="0" y="4" width="2" height="18"/><rect x="5" y="0" width="2" height="22"/><rect x="10" y="8" width="2" height="14"/><rect x="15" y="2" width="2" height="20"/><rect x="20" y="10" width="2" height="12"/><rect x="25" y="5" width="2" height="17"/></g></svg>
+      <span>Lorenzo Giorgio</span>
+    </a>
+    <span class="where label" id="where">Shore</span>
+    <div class="right">
+      <a class="label" href="https://www.linkedin.com/in/lorenzo-giorgio/" target="_blank" rel="noopener">LinkedIn</a>
+      <button class="pill" type="button" data-go="6">Contact</button>
+    </div>
+  </header>
+
+  <!-- S0 home -->
+  <section class="scene s-home active" data-name="home" data-label="Shore" aria-label="Introduction">
+    <div class="photo" id="photo"><img id="heroImg" src="surf.jpg" srcset="surf-900.jpg 900w, surf.jpg 1600w" sizes="100vw" alt="Lorenzo walking into the Atlantic with a surfboard under his arm"><canvas id="glints" aria-hidden="true"></canvas></div>
+    <div class="shade"></div>
+    <div class="cue label" id="cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+    <div class="inner"><div class="frame">
+      <div class="home-top">
+        <div>
+          <p class="label a-in">Portfolio &mdash; AI &amp; strategy</p>
+          <canvas id="heroName" class="a-in" role="img" aria-label="Lorenzo Giorgio"></canvas>
+        </div>
+        <div class="stats">
+          <div class="stat a-in"><b><small>EUR</small><span data-count="41" data-suffix="K">41K</span></b><span class="label">Incremental revenue<br>from one turnaround</span></div>
+          <div class="stat a-in"><b><span data-count="57" data-suffix="pp">57pp</span></b><span class="label">Excess stock<br>swing in 6 months</span></div>
+        </div>
+      </div>
+      <div></div>
+      <div class="home-bottom">
+        <div>
+          <h1 class="home-h split">Business problems solved with AI that people actually use</h1>
+          <div class="tags a-in">
+            <div class="tag label"><b>Rome</b><span>open across the EU</span></div>
+            <div class="tag label"><b>LUISS + Nova SBE</b><span>MSc, 2024 &ndash; 2026</span></div>
+            <div class="tag label"><b>Emma</b><span>BD, Lisbon, 2026</span></div>
+          </div>
+        </div>
+        <button class="circle" type="button" data-go="1" aria-label="See the work">
+          <svg viewBox="0 0 168 168" aria-hidden="true">
+            <circle cx="84" cy="84" r="82" fill="none" stroke="currentColor" stroke-width="1"/>
+            <g class="ring" id="ring">
+              <defs><path id="circ" d="M84 84 m-64 0 a64 64 0 1 1 128 0 a64 64 0 1 1 -128 0"/></defs>
+              <circle cx="84" cy="84" r="64" fill="none" stroke="none"/>
+              <text font-family="Unbounded, sans-serif" font-size="9.5" fill="currentColor"><textPath href="#circ" textLength="396" lengthAdjust="spacing">SEE THE WORK &#183; SEE THE WORK &#183; </textPath></text>
+            </g>
+          </svg>
+          <span class="mid">Paddle<br>out</span>
+        </button>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- S1 manifesto -->
+  <section class="scene s-mani" data-name="manifesto" data-label="The idea" aria-label="Point of view">
+    <canvas id="swellCanvas" aria-hidden="true"></canvas>
+    <div class="inner"><div class="frame">
+      <p class="label a-in acc">Point of view</p>
+      <p class="mani" id="mani">&ldquo;The next wave of enterprise AI will not be led by engineers. It will be led by the people who know the business well enough to redesign it, and who can now build the tool themselves&rdquo;</p>
+      <p class="lede a-in">The gap between business judgment and the ability to build is widest in Southern Europe. That is the gap I want to close for clients.</p>
+      <button class="pill-light a-in" type="button" data-go="2">See the numbers</button>
+    </div></div>
+  </section>
+
+  <!-- S2 numbers -->
+  <section class="scene s-nums" data-name="numbers" data-label="Results" aria-label="Results">
+    <canvas class="scan-bg" id="seaScan" aria-hidden="true"></canvas>
+    <div class="inner"><div class="frame">
+      <p class="label a-in acc">Emma, The Sleep Company &mdash; Lisbon &mdash; Feb to Jul 2026</p>
+      <h2 class="h-xl split" style="margin-top:14px">Six months, four numbers</h2>
+      <div class="nums">
+        <div class="num a-in"><b data-count="41" data-prefix="&#8364;" data-suffix="K">&#8364;41K</b><span class="label">Incremental revenue</span><p>Net revenue from a category turnaround, at positive margins.</p></div>
+        <div class="num a-in"><b data-count="57" data-suffix="pp">57pp</b><span class="label">Excess stock swing</span><p>Excess and blocked stock from +35% to &minus;22% of plan.</p></div>
+        <div class="num a-in"><b data-count="75" data-prefix="&#8722;" data-suffix="%">&#8722;75%</b><span class="label">Coordination time</span><p>30&ndash;60 min down to 5&ndash;15 min per cycle, across 3 teams.</p></div>
+        <div class="num a-in"><b data-count="1200" data-suffix="+" data-sep="1">1,200+</b><span class="label">AI Pioneers</span><p>Named among Emma's top AI practitioners across 1,200+ staff.</p></div>
+      </div>
+      <p class="lede a-in">Figures adjusted for confidentiality. Originals and full context on request.</p>
+    </div></div>
+  </section>
+
+  <!-- S3 Emma building -->
+  <section class="scene s-emma" data-name="emma" data-label="Emma, Lisbon" aria-label="Emma cases">
+    <div class="emma-3d" id="emma3d" aria-hidden="true"><canvas id="emmaCanvas"></canvas><div class="scanlines"></div><div class="pins" id="pins"></div></div>
+    <div class="inner"><div class="frame emma-frame">
+      <div class="emma-side">
+        <p class="label a-in acc">Emma, The Sleep Company &middot; Lisbon</p>
+        <h2 class="h-xl split" style="margin-top:12px">Ten cases, one building</h2>
+        <p class="lede a-in" style="font-size:.95rem">Every lit floor is a project from my six months at Emma. Pick one from the list or click a floor. Drag to turn the building.</p>
+        <div class="caselist a-in" id="caselist" role="tablist" aria-label="Emma cases"></div>
+        <p class="label emma-note a-in">Stylized model of the Lumnia building, EXEO campus &mdash; Emma's Lisbon office</p>
+      </div>
+      <div></div>
+      <div class="emma-card a-in" id="card" role="tabpanel" aria-live="polite"></div>
+    </div></div>
+  </section>
+
+  <!-- S4 board -->
+  <section class="scene s-board" data-name="board" data-label="My own board" aria-label="Personal project">
+    <div class="inner"><div class="frame board">
+      <div>
+        <p class="label a-in acc">Shaping my own board &mdash; personal build</p>
+        <h2 class="h-xl split" style="margin-top:14px">A local AI agent, built from scratch</h2>
+        <p class="lede a-in">A desktop assistant on a small 7B model, on an ordinary laptop, with no cloud. I built it to learn what makes an agent reliable. The answer was measurement: every change is tested against a fixed set of tasks before it ships.</p>
+        <ul class="facts">
+          <li class="a-in">Brand manager and finance manager roles, one-click recipes</li>
+          <li class="a-in">Notes, web research, voice, a VS Code extension</li>
+          <li class="a-in">Sizes itself to each computer's memory and speed &middot; 846 unit tests</li>
+        </ul>
+        <div class="also a-in">
+          <div><span class="label acc">Also built</span><h3>FantaScore</h3><p>Auction assistant, 490 players, used live at a real draft. <a href="https://github.com/lgiorgio2002-crypto/FantaScore" target="_blank" rel="noopener">GitHub &rarr;</a></p></div>
+          <div><span class="label acc">Also written</span><h3>Rollout framework</h3><p>Five decisions for getting a team to adopt a new tool.</p></div>
+        </div>
+      </div>
+      <div class="meters">
+        <div class="mrow a-in" data-was="0" data-now="96.8"><div class="meter-top"><span class="label">Full task suite</span><b>90 / 93</b></div><div class="meter"></div></div>
+        <div class="mrow a-in" data-was="0" data-now="100"><div class="meter-top"><span class="label">Web research tasks</span><b>35 / 35</b></div><div class="meter"></div></div>
+        <div class="mrow a-in" data-was="0" data-now="100"><div class="meter-top"><span class="label">File search by meaning</span><b>0/5 &rarr; 5/5</b></div><div class="meter"></div></div>
+        <div class="mrow a-in" data-was="50" data-now="100"><div class="meter-top"><span class="label">Recovered dropped tool calls</span><b>5/10 &rarr; 10/10</b></div><div class="meter"></div></div>
+        <div class="mrow a-in" data-was="70" data-now="95"><div class="meter-top"><span class="label">Honest "I can't run programs"</span><b>14/20 &rarr; 19/20</b></div><div class="meter"></div></div>
+        <p class="label a-in muted">Mist = before the fix &middot; white = after</p>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- S5 method -->
+  <section class="scene s-method" data-name="method" data-label="How I work" aria-label="How I work">
+    <div class="inner"><div class="frame">
+      <p class="label a-in acc">Reading the water</p>
+      <h2 class="h-xl split" style="margin-top:14px">How I work</h2>
+      <div class="method">
+        <div class="m a-in"><span class="label">One</span><h3>AI output is a draft</h3><p>A price elasticity that came back positive, a weekly NPS figure that didn't match its file: I traced both to the source before reporting anything.</p></div>
+        <div class="m a-in"><span class="label">Two</span><h3>The judgment stays mine</h3><p>Claude pulls and cleans data, writes code and drafts text. The framework and the decisions stay with me.</p></div>
+        <div class="m a-in"><span class="label">Three</span><h3>Cheaper only if it works</h3><p>I tested a cheaper model on a production automation and dropped it when it failed multi-step rules.</p></div>
+        <div class="m a-in"><span class="label">Four</span><h3>One number beats ten adjectives</h3><p>Where I can quantify, I do. Where I can't yet, I say so instead of dressing it up.</p></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- S6 contact -->
+  <section class="scene s-contact" data-name="contact" data-label="Back to shore" aria-label="Contact and background">
+    <div class="inner"><div class="frame">
+      <p class="label a-in">Back to shore &mdash; become part of the next project</p>
+      <canvas id="talkName" role="img" aria-label="Let's talk"></canvas>
+      <div class="contact-grid">
+        <div class="a-in">
+          <span class="label">Write to me</span>
+          <div class="line"><span class="val" id="email">lorenzo.giorgio2708@gmail.com</span><button class="copy" type="button" id="copyEmail">Copy</button></div>
+          <div class="book">
+            <a class="pill" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Interview%20with%20Lorenzo%20Giorgio&amp;details=Interview%20request%20sent%20from%20Lorenzo%20Giorgio%27s%20portfolio.%20Pick%20a%20time%20that%20suits%20you%3B%20Lorenzo%20receives%20the%20invite%20and%20confirms.&amp;add=lorenzo.giorgio2708%40gmail.com" target="_blank" rel="noopener">Schedule an interview</a>
+            <a class="copy" href="mailto:lorenzo.giorgio2708@gmail.com?subject=Interview%20-%20Lorenzo%20Giorgio%20portfolio&amp;body=Hi%20Lorenzo%2C%0A%0AI%20saw%20your%20portfolio%20and%20would%20like%20to%20schedule%20an%20interview.%0A%0A">Email me</a>
+          </div>
+          <div class="links">
+            <a href="https://www.linkedin.com/in/lorenzo-giorgio/" target="_blank" rel="noopener">LinkedIn &mdash; linkedin.com/in/lorenzo-giorgio</a>
+            <a href="https://app.notion.com/p/Lorenzo-Giorgio-Portfolio-361b97d09a8c808382e4de864eb82fee" target="_blank" rel="noopener">Full case library (Notion)</a>
+          </div>
+        </div>
+        <div class="a-in"><span class="label">Education</span><ul>
+          <li>MSc Management, Entrepreneurship &amp; Innovation<small>LUISS + Nova SBE, double degree, 2024&ndash;2026</small></li>
+          <li>BSc Economics &amp; Management<small>LUISS, 110/110 cum laude</small></li></ul></div>
+        <div class="a-in"><span class="label">Experience</span><ul>
+          <li>Business Development Intern<small>Emma, The Sleep Company, Lisbon, Feb&ndash;Jul 2026</small></li>
+          <li>Emma AI Pioneers Group<small>Global, cross-functional AI adoption</small></li></ul></div>
+        <div class="a-in"><span class="label">Certified &middot; Languages</span><ul>
+          <li>McKinsey Forward Program<small>Jun 2026</small></li>
+          <li>Claude API &middot; Claude Code<small>Anthropic; Google PM, Data Analytics, AI Essentials</small></li>
+          <li>Italian, English C2<small>French B1 &middot; Portuguese B1</small></li></ul></div>
+      </div>
+      <p class="label fine a-in">Built by Lorenzo with Claude Code, Motion and Three.js &middot; numbers and identifying details adjusted for confidentiality</p>
+    </div></div>
+  </section>
+
+  <nav class="ticks" id="ticks" aria-label="Scenes"></nav>
+  <span class="counter label" id="counter">01 / 07</span>
+  <canvas id="wipe" aria-hidden="true"></canvas>
+  <div class="tcard" id="tcard" aria-hidden="true"><span class="label" id="tnum"></span><span class="tname" id="tname"></span></div>
+
+</div>
+
+<!-- lead-case charts -->
+<template id="fig-0">
+  <figure>
+    <svg viewBox="0 0 320 200" role="img" aria-label="Excess and blocked stock versus plan: plus 35 percent before, minus 22 percent after">
+      <line x1="30" y1="104" x2="310" y2="104" stroke="#b9d7e4" stroke-opacity=".6"/>
+      <text x="24" y="107" fill="#b9d7e4" font-size="8" text-anchor="end">0%</text>
+      <g class="bars-up"></g><g class="bars-down"></g>
+      <text x="105" y="9" fill="#f5f7f6" font-size="11" text-anchor="middle">+35%</text>
+      <text x="235" y="180" fill="#8fd3e8" font-size="11" text-anchor="middle">&#8722;22%</text>
+      <text x="105" y="120" fill="#b9d7e4" font-size="8" text-anchor="middle">BEFORE</text>
+      <text x="235" y="96" fill="#b9d7e4" font-size="8" text-anchor="middle">AFTER</text>
+    </svg>
+    <figcaption class="label">Excess + blocked stock vs plan</figcaption>
+  </figure>
+</template>
+<template id="fig-1">
+  <figure>
+    <svg viewBox="0 0 320 210" role="img" aria-label="Hybrid V2: a 10 percent price increase implies about a 13 percent volume drop">
+      <line x1="40" y1="24" x2="300" y2="24" stroke="#b9d7e4" stroke-opacity=".6"/>
+      <line x1="40" y1="24" x2="40" y2="184" stroke="#b9d7e4" stroke-opacity=".6"/>
+      <line x1="40" y1="104" x2="300" y2="104" stroke="#b9d7e4" stroke-opacity=".18"/>
+      <line x1="40" y1="184" x2="300" y2="184" stroke="#b9d7e4" stroke-opacity=".18"/>
+      <text x="34" y="27" fill="#b9d7e4" font-size="8" text-anchor="end">0%</text>
+      <text x="34" y="107" fill="#b9d7e4" font-size="8" text-anchor="end">&#8722;7.5%</text>
+      <text x="34" y="187" fill="#b9d7e4" font-size="8" text-anchor="end">&#8722;15%</text>
+      <text x="40" y="14" fill="#b9d7e4" font-size="8" text-anchor="middle">0</text>
+      <text x="170" y="14" fill="#b9d7e4" font-size="8" text-anchor="middle">+5%</text>
+      <text x="300" y="14" fill="#b9d7e4" font-size="8" text-anchor="end">+10% PRICE</text>
+      <path class="draw" d="M40 24 L300 164.8" stroke="#8fd3e8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="300" cy="164.8" r="4" fill="#8fd3e8"/>
+      <text x="292" y="182" fill="#8fd3e8" font-size="9" text-anchor="end">&#8722;13.2% VOLUME</text>
+      <text x="44" y="204" fill="#b9d7e4" font-size="8">HYBRID V2 &#183; ELASTICITY &#8722;1.317</text>
+    </svg>
+    <figcaption class="label">FOAM and Hybrid V1: signal too weak, not reported</figcaption>
+  </figure>
+</template>
+<template id="fig-2">
+  <figure>
+    <svg viewBox="0 0 320 210" role="img" aria-label="Pipeline: data exports, MCP, Claude Enterprise, weekly report, Italy team">
+      <g font-size="8" fill="#f5f7f6" font-family="Unbounded, sans-serif">
+        <rect class="node" x="10" y="14" width="140" height="36" rx="18" fill="none" stroke="#b9d7e4"/>
+        <text x="80" y="35" text-anchor="middle">DATA EXPORTS</text>
+        <rect class="node" x="170" y="14" width="140" height="36" rx="18" fill="none" stroke="#b9d7e4"/>
+        <text x="240" y="35" text-anchor="middle">MCP CONNECTORS</text>
+        <rect class="node" x="90" y="86" width="140" height="36" rx="18" fill="#8fd3e8"/>
+        <text x="160" y="107" text-anchor="middle" fill="#0b1f3a">CLAUDE ENTERPRISE</text>
+        <rect class="node" x="10" y="158" width="140" height="36" rx="18" fill="none" stroke="#b9d7e4"/>
+        <text x="80" y="179" text-anchor="middle">WEEKLY REPORT</text>
+        <rect class="node" x="170" y="158" width="140" height="36" rx="18" fill="none" stroke="#b9d7e4"/>
+        <text x="240" y="179" text-anchor="middle">ITALY TEAM + HEAD</text>
+      </g>
+      <g stroke="#f5f7f6" stroke-width="1.4" fill="none">
+        <path class="draw" d="M150 32 H170"/>
+        <path class="draw" d="M240 50 V68 H160 V86"/>
+        <path class="draw" d="M160 122 V140 H80 V158"/>
+        <path class="draw" d="M150 176 H170"/>
+      </g>
+    </svg>
+    <figcaption class="label">Near-zero manual input once live</figcaption>
+  </figure>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var M = window.Motion;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var live = !!M && !reduce;
+  var EASE = [0.22, 1, 0.36, 1];
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function A(el, kf, o) { if (!live || !el || (el.length === 0)) return Promise.resolve(); return M.animate(el, kf, o); }
+  var COL = { mist: "#b9d7e4", foam: "#f5f7f6", glacier: "#8fd3e8", ink: "#0b1f3a", deep: "#0b1f3a" };
+
+  var app = $("#app");
+  var scenes = $$(".scene");
+  var current = 0, busy = false;
+  var ptr = { x: -9999, y: -9999 };
+  app.addEventListener("pointermove", function (e) { var r = app.getBoundingClientRect(); ptr.x = e.clientX - r.left; ptr.y = e.clientY - r.top; });
+  app.addEventListener("pointerleave", function () { ptr.x = -9999; ptr.y = -9999; });
+
+  // ---------- Emma cases ----------
+  var CASES = [
+    { t: "Category turnaround", k: "Commercial &middot; Italy", lead: true, big: "&#8364;41K", bl: "Incremental net revenue<br>at positive margins",
+      impact: "Two weeks over target after 24 months of underperformance. Excess and blocked stock from +35% to &minus;22% of plan.",
+      sit: "A category under target for 24 months, stock 35% above plan and an open customer-experience issue.",
+      did: "Designed bundles, ran a promotional push, built the depletion strategy. Resolved the CX issue in one week.",
+      j: "Cleared the stock without selling below margin to hit the number.", vol: "L", fl: 8 },
+    { t: "Price increase model", k: "Pricing &middot; Analytics", lead: true, big: "&#8722;1.317", bl: "Price elasticity, Hybrid V2<br>R&#178; 0.424 &middot; p &lt; 0.001",
+      impact: "How much volume a list-price increase would cost, per product line. An interactive dashboard and a 5-sheet Excel model with a scenario simulator and breakeven analysis.",
+      sit: "The team was weighing a list-price increase and needed the volume cost per product line.",
+      did: "Estimated elasticity by line, tested which estimates were reliable, built the simulator and breakeven model on top.",
+      j: "Reported the one line with a reliable estimate and excluded two whose data could not support a number.", vol: "T", fl: 6 },
+    { t: "Weekly report that builds itself", k: "Reporting &middot; AI", lead: true, big: "~1.5h", bl: "Manual work removed<br>every week",
+      impact: "An MCP + Claude Enterprise pipeline replaced a weekly slide deck built by hand. Read by the full Italy team and the Italy/France Head.",
+      sit: "The weekly performance deck was assembled by hand, about 1.5 hours of copy-paste every week.",
+      did: "Connected the data to Claude Enterprise through MCP and built the pipeline that produces the report.",
+      j: "Launched it as a live pilot the team used every week, so trust came from use, not from a demo.", vol: "R", fl: 6 },
+    { t: "Excess stock depletion", k: "Operations", big: "3 teams", bl: "Manual process replaced<br>with zero manual input",
+      impact: "Designed and deployed a weekly depletion workflow that did not exist before. Adopted by the corporate team for EU-wide deployment.", vol: "L", fl: 5 },
+    { t: "Lead time automation", k: "Operations", big: "&#8722;75%", bl: "Coordination time<br>per cycle",
+      impact: "Coordination cut from 30&ndash;60 minutes to 5&ndash;15 minutes per cycle, across 3 teams and 10+ stakeholders.", vol: "R", fl: 3 },
+    { t: "Certification impact", k: "Analytics &middot; DiD", big: "1 of 2", bl: "Categories with a<br>clean causal estimate",
+      impact: "Difference-in-differences with session-weighted WLS and HC1 robust standard errors, placebo-tested.",
+      j: "Flagged the second category as untrustworthy because of a composition-break confound, instead of reporting a headline number for both.", vol: "T", fl: 3 },
+    { t: "CX intelligence centre", k: "Customer experience", big: "3&ndash;5", bl: "NPS points at stake<br>in the refund process",
+      impact: "Showed the refund process was worth about 3&ndash;5 NPS points. Built on under 1% of the monthly Claude Enterprise token budget.", vol: "L", fl: 2 },
+    { t: "Custom Claude skills", k: "AI tooling", big: "1 day &rarr; 30 min", bl: "Promo analysis",
+      impact: "Three documented skills reused weekly by the team: promo analysis, dashboard commentary (~45 min a week saved) and date-format cleanup on a recurring Ops data feed.", vol: "T", fl: 7 },
+    { t: "Q4 beds launch call", k: "Launch &middot; Analytics", big: "Hold", bl: "Recommendation<br>on the Q4 launch",
+      impact: "A Gower similarity model benchmarked new products with no sales history against comparable ones.",
+      j: "The projection sat close to the launch hurdle with a wide confidence band, so I recommended holding the launch rather than committing on a borderline number.", vol: "R", fl: 1 },
+    { t: "AI playbook and handover", k: "Enablement", big: "3", bl: "Documents left<br>for the team",
+      impact: "Wrote the team's AI best-practices playbook, a full handover package and an onboarding guide before leaving. Named an Emma AI Pioneer.", vol: "P", fl: 1 }
+  ];
+  var caselist = $("#caselist");
+  CASES.forEach(function (c, i) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "ctab"; b.setAttribute("role", "tab"); b.setAttribute("data-c", i);
+    b.setAttribute("aria-selected", i === 0 ? "true" : "false");
+    b.innerHTML = '<span class="n">' + (i < 9 ? "0" : "") + (i + 1) + '</span><span class="t">' + c.t + "</span>" + (c.lead ? '<span class="lead">Lead</span>' : "");
+    caselist.appendChild(b);
+  });
+
+  // split headings into words
+  $$(".split, #mani").forEach(function (el) {
+    el.innerHTML = el.textContent.trim().split(/\s+/).map(function (w) { return '<span class="wm"><span class="w">' + w + "</span></span>"; }).join(" ");
+  });
+  // manifesto: uneven baseline and size, like hand-set type
+  $$("#mani .wm").forEach(function (m, i) {
+    var r = Math.sin(i * 91.7) * 0.5 + 0.5;
+    if (r > 0.72) { m.style.fontSize = "0.82em"; m.style.top = (r * 6).toFixed(1) + "px"; }
+    else if (r < 0.2) { m.style.fontSize = "1.08em"; m.style.top = "-" + (r * 10).toFixed(1) + "px"; }
+  });
+
+  // ---------- line-scan renderer ----------
+  function hash(i) { var x = Math.sin(i * 12.9898) * 43758.5453; return x - Math.floor(x); }
+  function Scan(canvas, getSource, o) {
+    var ctx = canvas.getContext("2d"), W = 0, H = 0, segs = [], seeds = [];
+    function layout() {
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = canvas.clientWidth; H = canvas.clientHeight;
+      if (!W || !H) return;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var src = getSource(W, H); if (!src) return;
+      var nc = Math.max(1, Math.floor(W / o.gap)), nr = Math.max(1, Math.floor(H / o.cell));
+      var off = document.createElement("canvas"); off.width = nc; off.height = nr;
+      var oc = off.getContext("2d", { willReadFrequently: true });
+      var sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+      var c = o.crop || { x: 0, y: 0, w: 1, h: 1 };
+      var cx = c.x * sw, cy = c.y * sh, cw = c.w * sw, ch = c.h * sh;
+      if (o.cover) { var tar = (nc * o.gap) / (nr * o.cell), sar = cw / ch, pos = o.pos || { x: 0.5, y: 0.5 }; if (sar > tar) { var nw = ch * tar; cx += (cw - nw) * pos.x; cw = nw; } else { var nh = cw / tar; cy += (ch - nh) * pos.y; ch = nh; } }
+      oc.drawImage(src, cx, cy, cw, ch, 0, 0, nc, nr);
+      var d = oc.getImageData(0, 0, nc, nr).data;
+      segs = []; seeds = [];
+      for (var i = 0; i < nc; i++) {
+        var col = [], s = -1, acc = 0;
+        for (var j = 0; j <= nr; j++) {
+          var v = 0;
+          if (j < nr) { var k = (j * nc + i) * 4; var l = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255; v = o.mode === "light" ? l : 1 - l; v = Math.pow(v, o.gamma || 1); }
+          var on = j < nr && v > o.thr + (hash(i * 7 + j) - 0.5) * (o.jit || 0);
+          if (on) { if (s < 0) { s = j; acc = 0; } acc += v; }
+          else if (s >= 0) { col.push([s, j - s, acc / (j - s)]); s = -1; }
+        }
+        segs.push(col); seeds.push(hash(i + 1));
+      }
+    }
+    function draw(t, reveal) {
+      if (!W) return;
+      if (reveal == null) reveal = 1;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = o.color;
+      var n = segs.length, px = -9999, py = -9999;
+      if (o.push && ptr.x > -999) { var r = canvas.getBoundingClientRect(), ar = app.getBoundingClientRect(); px = ptr.x - (r.left - ar.left); py = ptr.y - (r.top - ar.top); }
+      for (var i = 0; i < n; i++) {
+        var sd = seeds[i];
+        if (sd * 0.35 + (i / n) * 0.65 > reveal) continue;
+        var x = i * o.gap, dy = 0;
+        if (o.amp) dy = Math.sin(t * 1.1 + i * 0.09 + sd * 6) * o.amp;
+        if (px > -999) { var dx = x - px; if (Math.abs(dx) < 160 && py > -80 && py < H + 80) dy += Math.exp(-dx * dx / 3200) * o.push * Math.sin(t * 4 - dx * 0.06); }
+        var col = segs[i];
+        for (var q = 0; q < col.length; q++) {
+          var sg = col[q], w = Math.max(1, (o.wMin || 1) + sg[2] * (o.wMax || 2.2));
+          ctx.fillRect(x, sg[0] * o.cell + dy, w, sg[1] * o.cell);
+        }
+      }
+    }
+    return { layout: layout, draw: draw };
+  }
+  function textSource(text, weight) {
+    return function (W, H) {
+      var c = document.createElement("canvas"); c.width = Math.max(1, Math.round(W)); c.height = Math.max(1, Math.round(H));
+      var x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, c.width, c.height);
+      x.fillStyle = "#fff"; x.textBaseline = "alphabetic";
+      var size = H * 1.05; x.font = weight + " " + size + "px Unbounded, Arial Black, sans-serif";
+      var m = x.measureText(text); var scale = Math.min(1, (c.width * 0.995) / m.width); size *= scale;
+      x.font = weight + " " + size + "px Unbounded, Arial Black, sans-serif";
+      x.fillText(text, 0, H * 0.5 + size * 0.36);
+      return c;
+    };
+  }
+  var photo = new Image(); photo.src = "surf-900.jpg";
+  var photoReady = new Promise(function (res) { if (photo.complete && photo.naturalWidth) res(); else { photo.onload = res; photo.onerror = res; } });
+  var fontsReady = (document.fonts && document.fonts.load) ? Promise.all([document.fonts.load("800 80px Unbounded"), document.fonts.load("400 40px Marcellus")]).catch(function () {}) : Promise.resolve();
+  function photoSrc() { return photo.naturalWidth ? photo : null; }
+
+  var scans = {
+    loadScan: Scan($("#loadScan"), photoSrc, { cover: true, pos: { x: 0.5, y: 0.62 }, gap: 4, cell: 2, mode: "dark", gamma: 1.35, thr: 0.47, jit: 0.14, color: COL.foam, amp: 1, push: 8, wMax: 2.3 }),
+    loadName: Scan($("#loadName"), textSource("LORENZO GIORGIO", 800), { gap: 5, cell: 2, mode: "light", thr: 0.5, jit: 0.25, color: COL.mist, amp: 0.8, wMin: 2, wMax: 1.4 }),
+    heroName: Scan($("#heroName"), textSource("LORENZO GIORGIO", 800), { gap: 5, cell: 2, mode: "light", thr: 0.5, jit: 0.25, color: COL.ink, amp: 0.7, push: 7, wMin: 2, wMax: 1.4 }),
+    seaScan: Scan($("#seaScan"), photoSrc, { crop: { x: 0, y: 0.47, w: 1, h: 0.24 }, cover: true, gap: 6, cell: 3, mode: "dark", gamma: 1.4, thr: 0.42, jit: 0.2, color: "rgba(245,247,246,.2)", amp: 2.2, push: 10, wMax: 2.4 }),
+    talkName: Scan($("#talkName"), textSource("LET'S TALK", 800), { gap: 6, cell: 2, mode: "light", thr: 0.5, jit: 0.25, color: COL.ink, amp: 0.8, push: 9, wMin: 2.4, wMax: 1.6 })
+  };
+  var sceneScans = { 0: ["heroName"], 2: ["seaScan"], 6: ["talkName"] };
+
+  // swell bars (manifesto)
+  var sw = $("#swellCanvas"), swc = sw.getContext("2d"), SW = 0, SH = 0;
+  function swLayout() { var dpr = Math.min(2, window.devicePixelRatio || 1); SW = sw.clientWidth; SH = sw.clientHeight; if (!SW) return; sw.width = SW * dpr; sw.height = SH * dpr; swc.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function swDraw(t, rise) {
+    if (!SW) return;
+    swc.clearRect(0, 0, SW, SH); swc.fillStyle = "rgba(245,247,246,.8)";
+    var gap = 7, px = -9999;
+    if (ptr.x > -999) { var r = sw.getBoundingClientRect(), ar = app.getBoundingClientRect(); px = ptr.x - (r.left - ar.left); }
+    for (var x = 0, i = 0; x < SW; x += gap, i++) {
+      var h = 0.42 + 0.22 * Math.sin(t * 0.7 + i * 0.06) + 0.14 * Math.sin(t * 1.6 - i * 0.17) + 0.08 * (hash(i) - 0.5);
+      if (px > -999) { var dx = x - px; h += Math.exp(-dx * dx / 9000) * 0.35; }
+      h = Math.max(0.04, Math.min(1, h)) * SH * (rise == null ? 1 : rise);
+      var w = 1.2 + 2.2 * (h / SH);
+      swc.fillRect(x, SH - h, w, h);
+      if (hash(i * 3) > 0.93) swc.fillRect(x - 2, SH - h - 10 - hash(i) * 30, 6, 6);
+    }
+  }
+
+  // ---------- wipe (curtain of rising bars) ----------
+  var wc = $("#wipe"), wx = wc.getContext("2d"), WW = 0, WH = 0, wDelay = [], GAPW = 6;
+  function wipeLayout() { var dpr = Math.min(2, window.devicePixelRatio || 1); WW = wc.clientWidth; WH = wc.clientHeight; wc.width = WW * dpr; wc.height = WH * dpr; wx.setTransform(dpr, 0, 0, dpr, 0, 0); shapeSwell(); }
+  function shapeSwell() {
+    var ph = Math.random() * 6.283; wDelay = [];
+    for (var i = 0; i * GAPW < WW + GAPW; i++) wDelay.push(0.3 * (0.5 + 0.5 * Math.sin(i * 0.032 + ph)) + 0.12 * (0.5 + 0.5 * Math.sin(i * 0.11 + ph * 2)) + 0.08 * hash(i * 1.7));
+  }
+  function wipeFrame(p, fromBottom, closing, color) {
+    wx.clearRect(0, 0, WW, WH);
+    for (var i = 0; i < wDelay.length; i++) {
+      var k = Math.max(0, Math.min(1, p * 1.5 - wDelay[i])); k = k * k * (3 - 2 * k);
+      var h = (closing ? 1 - k : k) * WH;
+      if (h <= 0) continue;
+      var y = fromBottom ? (closing ? 0 : WH - h) : (closing ? WH - h : 0);
+      wx.fillStyle = color; wx.fillRect(i * GAPW, y, GAPW + 0.6, h);
+      if (h < WH - 1) {
+        var edge = y === 0 ? y + h - 3 : y;
+        wx.fillStyle = "rgba(245,247,246,.92)"; wx.fillRect(i * GAPW, edge, GAPW * 0.55, 3);
+      }
+    }
+  }
+  function curtain(fromBottom, closing, dur, color) {
+    color = color || COL.mist;
+    if (!closing) shapeSwell();
+    return new Promise(function (res) {
+      M.animate(0, 1, { duration: dur, ease: closing ? [0.3, 0, 0.2, 1] : [0.6, 0, 0.7, 0.3], onUpdate: function (p) { wipeFrame(p, fromBottom, closing, color); } }).then(function () { if (closing) wx.clearRect(0, 0, WW, WH); else wipeFrame(1, fromBottom, false, color); res(); });
+    });
+  }
+
+  // ---------- 3D: Lumnia building ----------
+  var E3 = null;
+  function initEmma() {
+    if (E3 || !window.THREE) return E3;
+    var T = window.THREE, wrap = $("#emma3d"), canvas = $("#emmaCanvas");
+    var renderer;
+    try { renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); } catch (e) { app.classList.add("no3d"); return null; }
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    var scene = new T.Scene(); scene.fog = new T.Fog(0x0b1f3a, 95, 175);
+    var cam = new T.PerspectiveCamera(30, 1, 0.1, 300);
+    scene.add(new T.HemisphereLight(0xdbe8f0, 0x1d4e89, 0.95));
+    var sun = new T.DirectionalLight(0xffe2b0, 0.85); sun.position.set(-22, 34, 26); scene.add(sun);
+    var grid = new T.GridHelper(90, 45, 0x3f7f99, 0x1d4e89); grid.material.transparent = true; grid.material.opacity = 0.32; scene.add(grid);
+    var lawn = new T.Mesh(new T.PlaneGeometry(40, 9), new T.MeshBasicMaterial({ color: 0x2f6d88, transparent: true, opacity: 0.25 })); lawn.rotation.x = -Math.PI / 2; lawn.position.set(0, 0.01, 14); scene.add(lawn);
+
+    var root = new T.Group(); root.position.set(0, 0, 0.5); scene.add(root);
+    var mats = {
+      glass: new T.MeshStandardMaterial({ color: 0x2f6d88, emissive: 0x123a5e, transparent: true, opacity: 0.55, metalness: 0.5, roughness: 0.1, depthWrite: false }),
+      fin: new T.MeshStandardMaterial({ color: 0x6f8ea5, metalness: 0.45, roughness: 0.45 }),
+      slab: new T.MeshStandardMaterial({ color: 0x8faabb, roughness: 0.8 }),
+      stone: new T.MeshStandardMaterial({ color: 0xd9d1c1, roughness: 0.9 }),
+      dark: new T.MeshStandardMaterial({ color: 0x0e2747, roughness: 0.9 }),
+      edge: new T.LineBasicMaterial({ color: 0xf5f7f6, transparent: true, opacity: 0.5 }),
+      roof: new T.MeshStandardMaterial({ color: 0xe9f0f3, roughness: 0.7 }),
+      garden: new T.MeshStandardMaterial({ color: 0x2f6d88, roughness: 0.9 })
+    };
+    var FH = 0.9, groups = [], vols = {}, bands = [];
+    function volume(id, x, z, w, d, floors, y0, step, skip) {
+      var g = new T.Group(); g.position.set(x + w / 2, y0, z + d / 2); root.add(g); groups.push(g);
+      var h = floors * FH;
+      var glass = new T.Mesh(new T.BoxGeometry(w - 0.08, h, d - 0.08), mats.glass); glass.position.y = h / 2; g.add(glass);
+      var e = new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(w, h, d)), mats.edge); e.position.y = h / 2; g.add(e);
+      for (var f = 0; f <= floors; f++) { var s = new T.Mesh(new T.BoxGeometry(w + 0.04, 0.06, d + 0.04), mats.slab); s.position.y = f * FH; g.add(s); }
+      var pts = [];
+      for (var fx = -w / 2 + step / 2; fx < w / 2; fx += step) {
+        if (!(skip && fx > skip[0] && fx < skip[1])) pts.push([fx, d / 2 + 0.1, 0]);
+        pts.push([fx, -d / 2 - 0.1, 0]);
+      }
+      for (var fz = -d / 2 + step / 2; fz < d / 2; fz += step) { pts.push([w / 2 + 0.1, fz, 1]); pts.push([-w / 2 - 0.1, fz, 1]); }
+      var geo = new T.BoxGeometry(0.05, h, 0.22), im = new T.InstancedMesh(geo, mats.fin, pts.length);
+      var m4 = new T.Matrix4(), q0 = new T.Quaternion(), q1 = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), Math.PI / 2), one = new T.Vector3(1, 1, 1);
+      pts.forEach(function (p, i) { m4.compose(new T.Vector3(p[0], h / 2, p[1]), p[2] ? q1 : q0, one); im.setMatrixAt(i, m4); });
+      g.add(im);
+      vols[id] = { g: g, w: w, d: d, h: h };
+      return g;
+    }
+    // footprint read from the Lumnia drone photo: a U of three wings round a courtyard,
+    // closed on the street side by a two-floor terrace block
+    volume("L", -12.4, -8.8, 9.4, 16.2, 10, 0, 0.6);
+    volume("T", -4.4, -11.2, 17, 9.4, 8, 0, 0.6);
+    volume("R", 5.2, -3.6, 7, 14.6, 8, 0, 0.6);
+    volume("P", -7.6, 4, 12.8, 5.6, 2, 0, 0.6);
+    ["L", "T", "R"].forEach(function (id) {
+      var v = vols[id], plant = new T.Mesh(new T.BoxGeometry(v.w * 0.55, 0.7, v.d * 0.5), mats.roof);
+      plant.position.y = v.h + 0.35; v.g.add(plant);
+      var pe = new T.LineSegments(new T.EdgesGeometry(new T.BoxGeometry(v.w * 0.55, 0.7, v.d * 0.5)), mats.edge); pe.position.y = v.h + 0.35; v.g.add(pe);
+    });
+    [[-2.5, 0.6], [1.5, -1.2], [-0.5, 1.4], [3.2, 0.8]].forEach(function (q) {
+      var bed = new T.Mesh(new T.BoxGeometry(1.6, 0.2, 1), mats.garden); bed.position.set(q[0], vols.P.h + 0.1, q[1]); vols.P.g.add(bed);
+    });
+    var court = new T.Mesh(new T.PlaneGeometry(9, 5.8), mats.garden); court.rotation.x = -Math.PI / 2; court.position.set(-0.6, 0.02, 1.1); root.add(court);
+
+    // illuminated "emma" lettering on the facades
+    function signTexture() {
+      var c = document.createElement("canvas"); c.width = 1024; c.height = 256;
+      var x = c.getContext("2d");
+      x.clearRect(0, 0, c.width, c.height);
+      x.font = "700 200px Figtree, system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+      x.shadowColor = "rgba(143,211,232,.9)"; x.shadowBlur = 36; x.fillStyle = "#ffffff";
+      x.fillText("emma", c.width / 2, c.height / 2 + 6);
+      x.shadowBlur = 0; x.fillText("emma", c.width / 2, c.height / 2 + 6); x.fillText("emma", c.width / 2, c.height / 2 + 6);
+      var t = new T.CanvasTexture(c); t.anisotropy = 4; return t;
+    }
+    var signMat = new T.MeshBasicMaterial({ map: signTexture(), transparent: true, depthWrite: false, fog: false });
+    function addSign(id, width, fromTop, side) {
+      var v = vols[id], m = new T.Mesh(new T.PlaneGeometry(width, width / 4), signMat);
+      if (side === "west") { m.position.set(-v.w / 2 - 0.45, v.h - fromTop, 0); m.rotation.y = -Math.PI / 2; }
+      else { m.position.set(0, v.h - fromTop, v.d / 2 + 0.45); }
+      m.renderOrder = 5; v.g.add(m);
+    }
+    addSign("L", 9, 0.25, "west");
+    addSign("L", 5.6, 0.25);
+    addSign("T", 5.2, 0.25);
+
+    // one glowing band per case floor
+    CASES.forEach(function (c, i) {
+      var v = vols[c.vol];
+      var mat = new T.MeshBasicMaterial({ color: 0x8fd3e8, transparent: true, opacity: 0.0, depthWrite: false });
+      var b = new T.Mesh(new T.BoxGeometry(v.w + 0.3, FH - 0.12, v.d + 0.3), mat);
+      b.position.y = c.fl * FH + FH / 2; b.userData.i = i; v.g.add(b); bands.push(b);
+    });
+
+    // pins
+    var pins = $("#pins");
+    var pinEls = CASES.map(function (c, i) {
+      var p = document.createElement("div"); p.className = "pin label"; p.innerHTML = "<b>" + (i < 9 ? "0" : "") + (i + 1) + " &middot; " + c.t + "</b><i></i>"; pins.appendChild(p); return p;
+    });
+
+    var view = { az: -0.45, el: 0.42, dist: 84, ty: 3 }, drift = 0;
+    var sel = 0, hover = -1, W = 0, H = 0, offset = 0;
+    function size() {
+      W = wrap.clientWidth; H = wrap.clientHeight; if (!W || !H) return;
+      renderer.setSize(W, H, false); cam.aspect = W / H;
+      offset = W > 900 ? W * 0.02 : 0;
+      cam.setViewOffset(W, H, offset, 0, W, H);
+      cam.updateProjectionMatrix();
+    }
+    size();
+    if (window.ResizeObserver) new ResizeObserver(size).observe(wrap);
+
+    var ray = new T.Raycaster(), mv = new T.Vector2(), down = null, dragged = false;
+    function pick(e) {
+      var r = canvas.getBoundingClientRect();
+      mv.x = ((e.clientX - r.left) / r.width) * 2 - 1; mv.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      ray.setFromCamera(mv, cam);
+      var hit = ray.intersectObjects(bands, false)[0];
+      return hit ? hit.object.userData.i : -1;
+    }
+    wrap.addEventListener("pointerdown", function (e) { down = { x: e.clientX, y: e.clientY, az: view.az, el: view.el }; dragged = false; try { wrap.setPointerCapture(e.pointerId); } catch (er) {} });
+    wrap.addEventListener("pointermove", function (e) {
+      if (down) {
+        var dx = e.clientX - down.x, dy = e.clientY - down.y;
+        if (Math.abs(dx) + Math.abs(dy) > 5) { dragged = true; wrap.classList.add("dragging"); }
+        view.az = down.az - dx * 0.006; view.el = Math.max(0.05, Math.min(1.1, down.el + dy * 0.004));
+      } else { hover = pick(e); wrap.style.cursor = hover >= 0 ? "pointer" : ""; }
+    });
+    wrap.addEventListener("pointerup", function (e) {
+      wrap.classList.remove("dragging");
+      if (!dragged) { var i = pick(e); if (i >= 0) selectCase(i); }
+      down = null;
+    });
+
+    var built = 0;
+    function render(t) {
+      if (!W) size();
+      var az = view.az + (down || reduce ? 0 : Math.sin(t * 0.18) * 0.12);
+      var tgt = new T.Vector3(0, view.ty, 0);
+      cam.position.set(tgt.x + Math.sin(az) * Math.cos(view.el) * view.dist, tgt.y + Math.sin(view.el) * view.dist, tgt.z + Math.cos(az) * Math.cos(view.el) * view.dist);
+      cam.lookAt(tgt);
+      groups.forEach(function (g, i) { var k = Math.max(0.001, Math.min(1, built * 1.7 - i * 0.16)); g.scale.y = k * k * (3 - 2 * k) || 0.001; });
+      bands.forEach(function (b, i) {
+        var target = i === sel ? 0.78 + Math.sin(t * 3) * 0.1 : (i === hover ? 0.32 : 0.1);
+        b.material.opacity += (target * Math.min(1, built) - b.material.opacity) * 0.15;
+      });
+      renderer.render(scene, cam);
+      // pin for the selected case
+      pinEls.forEach(function (p, i) {
+        if (i !== sel || built < 0.95) { p.style.transform = "translate(-9999px,0)"; return; }
+        var b = bands[i], v = vols[CASES[i].vol], wp = new T.Vector3(0, b.position.y + FH / 2, v.d / 2);
+        b.parent.localToWorld(wp); wp.project(cam);
+        var x = (wp.x * 0.5 + 0.5) * W, y = (-wp.y * 0.5 + 0.5) * H;
+        p.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px) translate(-50%, -100%)";
+      });
+    }
+    function focus(i, instant) {
+      var c = CASES[i];
+      var azMap = { L: -0.75, T: 0.1, R: 0.7, P: -0.05 };
+      var to = { az: azMap[c.vol], ty: 1.5 + c.fl * FH * 0.6, el: c.vol === "T" ? 0.6 : (c.vol === "P" ? 0.5 : 0.36) };
+      if (instant || !live) { view.az = to.az; view.ty = to.ty; view.el = to.el; return; }
+      var from = { az: view.az, ty: view.ty, el: view.el };
+      M.animate(0, 1, { duration: 1.4, ease: EASE, onUpdate: function (p) { view.az = from.az + (to.az - from.az) * p; view.ty = from.ty + (to.ty - from.ty) * p; view.el = from.el + (to.el - from.el) * p; } });
+    }
+    E3 = {
+      render: render, focus: focus, size: size,
+      setSel: function (i) { sel = i; },
+      build: function () { if (!live) { built = 1; return; } built = 0; M.animate(0, 1, { duration: 2.2, ease: EASE, onUpdate: function (v) { built = v; } }); }
+    };
+    return E3;
+  }
+
+  function cardHTML(i) {
+    var c = CASES[i];
+    var h = '<span class="label k">' + (i < 9 ? "0" : "") + (i + 1) + " &middot; " + c.k + (c.lead ? " &middot; lead case" : "") + "</span>" +
+      "<h3>" + c.t + "</h3>" +
+      '<div class="big"><b>' + c.big + '</b><span class="label">' + c.bl + "</span></div>" +
+      '<p class="impact">' + c.impact + "</p>";
+    if (c.lead) h += $("#fig-" + i).innerHTML;
+    if (c.sit) h += '<dl><div><dt class="label">Situation</dt><dd>' + c.sit + '</dd></div><div><dt class="label">What I did</dt><dd>' + c.did + "</dd></div></dl>";
+    if (c.j) h += '<p class="judgment"><span class="label">Judgment call</span>' + c.j + "</p>";
+    return h;
+  }
+  function fillBars(d) {
+    var up = $(".bars-up", d), dn = $(".bars-down", d); if (!up) return;
+    var ns = "http://www.w3.org/2000/svg";
+    for (var i = 0; i < 14; i++) {
+      var a = document.createElementNS(ns, "rect"); a.setAttribute("x", 72 + i * 5); a.setAttribute("y", 13); a.setAttribute("width", 2.4); a.setAttribute("height", 91); a.setAttribute("fill", "#f5f7f6"); a.setAttribute("fill-opacity", ".5"); up.appendChild(a);
+      var b = document.createElementNS(ns, "rect"); b.setAttribute("x", 202 + i * 5); b.setAttribute("y", 104); b.setAttribute("width", 2.4); b.setAttribute("height", 57.2); b.setAttribute("fill", "#8fd3e8"); dn.appendChild(b);
+    }
+  }
+  function animateCard(d) {
+    if (!live) return;
+    A(Array.prototype.slice.call(d.children), { opacity: [0, 1], y: [16, 0] }, { duration: 0.55, delay: M.stagger(0.05), ease: EASE });
+    $$(".draw", d).forEach(function (p, k) { var L = p.getTotalLength(); p.style.strokeDasharray = L; M.animate(p, { strokeDashoffset: [L, 0] }, { duration: 0.8, delay: 0.3 + k * 0.2, ease: EASE }).then(function () { p.style.strokeDasharray = ""; }); });
+    A($$(".node", d), { opacity: [0, 1] }, { duration: 0.4, delay: M.stagger(0.1, { startDelay: 0.2 }) });
+    $$(".bars-up rect, .bars-down rect", d).forEach(function (r, k) { var upBar = r.parentNode.classList.contains("bars-up"); r.style.transformBox = "fill-box"; r.style.transformOrigin = upBar ? "50% 100%" : "50% 0%"; M.animate(r, { scaleY: [0, 1] }, { duration: 0.7, delay: 0.3 + (k % 14) * 0.03 + (upBar ? 0 : 0.45), ease: EASE }); });
+  }
+  var caseIdx = 0;
+  function selectCase(i, silent) {
+    caseIdx = i;
+    $$(".ctab").forEach(function (t, j) { t.setAttribute("aria-selected", String(i === j)); });
+    var d = $("#card");
+    function put() { d.innerHTML = cardHTML(i); fillBars(d); d.scrollTop = 0; }
+    if (E3) { E3.setSel(i); E3.focus(i, silent); }
+    if (silent || !live) { put(); return; }
+    A(d, { opacity: [1, 0], y: [0, 10] }, { duration: 0.2 }).then(function () { put(); d.style.opacity = ""; d.style.transform = ""; animateCard(d); });
+  }
+  caselist.addEventListener("click", function (e) { var b = e.target.closest(".ctab"); if (b) { var k = +b.getAttribute("data-c"); if (k !== caseIdx) selectCase(k); } });
+
+  // sun glints on the water (inside the photo layer, so they move with it)
+  var gl = $("#glints"), glx = gl.getContext("2d"), GW = 0, GH = 0, sparks = [];
+  function glLayout() {
+    var dpr = Math.min(2, window.devicePixelRatio || 1); GW = gl.clientWidth; GH = gl.clientHeight; if (!GW) return;
+    gl.width = GW * dpr; gl.height = GH * dpr; glx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sparks = [];
+    for (var i = 0; i < 60; i++) sparks.push({ x: Math.pow(hash(i * 3.1), 1.4) * 0.9, y: 0.45 + 0.13 * hash(i * 7.7), sp: 1.2 + 2.6 * hash(i * 1.3), ph: hash(i * 9.1) * 6.283, r: 0.8 + 1.5 * hash(i * 5.3) });
+  }
+  function glDraw(t) {
+    if (!GW) return;
+    glx.clearRect(0, 0, GW, GH); glx.fillStyle = "#fff";
+    for (var i = 0; i < sparks.length; i++) {
+      var k = sparks[i], a = Math.pow(Math.max(0, Math.sin(t * k.sp + k.ph)), 12);
+      if (a < 0.03) continue;
+      var x = k.x * GW, y = k.y * GH, r = k.r * (0.6 + a);
+      glx.globalAlpha = a;
+      glx.fillRect(x - r * 2.2, y - 0.5, r * 4.4, 1); glx.fillRect(x - 0.5, y - r * 2.2, 1, r * 4.4);
+    }
+    glx.globalAlpha = 1;
+  }
+  var breath = null, breathT = 0, cueOn = false;
+  function startBreath(delay) {
+    if (!live) return;
+    clearTimeout(breathT);
+    breathT = setTimeout(function () { if (current !== 0) return; breath = M.animate("#heroImg", { scale: [1, 1.05, 1] }, { duration: 18, repeat: Infinity, ease: "easeInOut" }); }, delay || 0);
+  }
+  function stopBreath() { clearTimeout(breathT); if (breath && breath.stop) breath.stop(); breath = null; }
+  function heroIn() {
+    if (!live) return;
+    A(".circle", { opacity: [0, 1], scale: [0.55, 1], rotate: [-50, 0] }, { type: "spring", stiffness: 110, damping: 13, delay: 0.7 });
+    A("#cue", { opacity: [0, 1] }, { duration: 0.6, delay: 1.2 });
+    if (!cueOn) { cueOn = true; M.animate("#cue i", { scaleY: [0, 1, 1], opacity: [1, 1, 0] }, { duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1.2 }); }
+    startBreath(1400);
+  }
+
+  function layoutAll() { glLayout(); Object.keys(scans).forEach(function (k) { scans[k].layout(); }); swLayout(); wipeLayout(); if (E3) E3.size(); }
+  var resizeT; window.addEventListener("resize", function () { clearTimeout(resizeT); resizeT = setTimeout(function () { layoutAll(); if (!live) drawStatic(); }, 120); });
+
+  // ---------- render loop ----------
+  var reveal = { loadScan: 0, loadName: 0 }, swellRise = 1, t0 = performance.now(), loading = live;
+  function frame(now) {
+    var t = (now - t0) / 1000;
+    if (!document.hidden) {
+      if (loading) { scans.loadScan.draw(t, reveal.loadScan); scans.loadName.draw(t, reveal.loadName); }
+      (sceneScans[current] || []).forEach(function (k) { scans[k].draw(t, 1); });
+      if (current === 0) glDraw(t);
+      if (current === 1) swDraw(t, swellRise);
+      if (current === 3 && E3) E3.render(t);
+    }
+    requestAnimationFrame(frame);
+  }
+  function drawStatic() { (sceneScans[current] || []).forEach(function (k) { scans[k].draw(0, 1); }); if (current === 1) swDraw(0, 1); if (current === 3 && E3) E3.render(0); }
+
+  // ---------- nav ----------
+  var ticks = $("#ticks");
+  scenes.forEach(function (s, i) {
+    var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-go", i); b.setAttribute("aria-label", s.getAttribute("data-label")); b.innerHTML = "<i></i>"; ticks.appendChild(b);
+  });
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function markNav(i) {
+    $$("#ticks button").forEach(function (b, j) { b.setAttribute("aria-current", String(i === j)); });
+    app.classList.toggle("ui-ink", i === 0 || i === 6);
+    app.classList.toggle("low-ink", i === 6);
+    $("#where").textContent = scenes[i].getAttribute("data-label");
+    $("#counter").textContent = pad(i + 1) + " / " + pad(scenes.length);
+  }
+
+  // ---------- scene choreography ----------
+  function enter(scene, idx) {
+    var inner = $(".inner", scene); inner.scrollTop = 0;
+    if (idx === 3) {
+      initEmma();
+      if (!$("#card").childElementCount) selectCase(caseIdx, true); else if (E3) E3.focus(caseIdx, true);
+      if (E3) { E3.size(); E3.build(); if (!live) E3.render(0); }
+    }
+    buildMeters(scene, !live);
+    if (!live) return;
+    A($$(".w", scene), { y: ["112%", "0%"], opacity: [0, 1] }, { duration: 0.95, delay: M.stagger(0.045, { startDelay: 0.05 }), ease: [0.16, 1, 0.3, 1] });
+    if (idx === 0) heroIn();
+    A($$(".a-in", scene), { opacity: [0, 1], y: [24, 0] }, { duration: 0.75, delay: M.stagger(0.05, { startDelay: 0.25 }), ease: EASE });
+    if (idx === 1) { swellRise = 0; M.animate(0, 1, { duration: 1.6, ease: EASE, onUpdate: function (v) { swellRise = v; } }); }
+    $$("[data-count]", scene).forEach(function (el, i) {
+      var end = +el.getAttribute("data-count"), pre = el.getAttribute("data-prefix") || "", suf = el.getAttribute("data-suffix") || "", sep = el.getAttribute("data-sep");
+      M.animate(0, end, { duration: 1.7, delay: 0.3 + i * 0.12, ease: EASE, onUpdate: function (v) { el.textContent = pre + (sep ? Math.round(v).toLocaleString("en-US") : Math.round(v)) + suf; } });
+    });
+    if (idx === 3) animateCard($("#card"));
+  }
+  function buildMeters(scene, instant) {
+    $$(".mrow", scene).forEach(function (row, r) {
+      var m = $(".meter", row), N = 30, was = +row.getAttribute("data-was"), now = +row.getAttribute("data-now");
+      if (!m.childElementCount) { for (var i = 0; i < N; i++) m.appendChild(document.createElement("i")); }
+      var cells = $$("i", m);
+      cells.forEach(function (c, i) {
+        var pct = (i + 1) / N * 100;
+        var final = pct <= was ? "was" : (pct <= now ? "on" : "");
+        if (instant) { c.className = final; return; }
+        c.className = "";
+        if (pct <= was) setTimeout(function () { c.className = "was"; }, 350 + r * 120 + i * 18);
+        else if (pct <= now) setTimeout(function () { c.className = "on"; }, 350 + r * 120 + (was ? 500 : 0) + i * 22);
+      });
+      if (!instant) A(cells, { scaleY: [0.2, 1] }, { duration: 0.5, delay: M.stagger(0.02, { startDelay: 0.3 + r * 0.12 }), ease: EASE });
+    });
+  }
+
+  var SCENE_BG = ["#6f98c4", "#1d4e89", "#143f70", "#0b1f3a", "#0a1a33", "#071528", "#cfe3ec"];
+  function go(to, push) {
+    to = Math.max(0, Math.min(scenes.length - 1, to));
+    if (to === current || busy) return;
+    var from = current, down = to > from;
+    current = to; markNav(to);
+    if (push !== false) { try { history.replaceState(null, "", "#" + scenes[to].getAttribute("data-name")); } catch (e) {} }
+    function swap() { scenes[from].classList.remove("active"); scenes[to].classList.add("active"); enter(scenes[to], to); if (!live) drawStatic(); }
+    if (!live) { swap(); return; }
+    busy = true;
+    var color = SCENE_BG[to], tc = $("#tcard"), img = $("#heroImg");
+    tc.style.color = to === 6 ? COL.ink : COL.foam;
+    $("#tnum").textContent = pad(to + 1) + " / " + pad(scenes.length);
+    $("#tname").textContent = scenes[to].getAttribute("data-label");
+    if (from === 0) { stopBreath(); A(img, { scale: [1, 1.14], filter: ["blur(0px)", "blur(8px)"] }, { duration: 0.8, ease: [0.6, 0, 0.8, 0.4] }); }
+    A($(".frame", scenes[from]), { opacity: [1, 0], y: [0, down ? -30 : 30], scale: [1, 0.97], filter: ["blur(0px)", "blur(4px)"] }, { duration: 0.45, ease: [0.6, 0, 0.8, 0.4] });
+    curtain(down, false, 0.6, color).then(function () {
+      var f = $(".frame", scenes[from]); f.style.opacity = ""; f.style.transform = ""; f.style.filter = "";
+      if (from === 0) { img.style.filter = ""; img.style.transform = ""; }
+      swap();
+      if (to === 0) A(img, { scale: [1.12, 1], filter: ["blur(6px)", "blur(0px)"] }, { duration: 1.3, ease: EASE });
+      A(tc, { opacity: [0, 1] }, { duration: 0.2 });
+      A([$("#tnum"), $("#tname")], { y: [28, 0], opacity: [0, 1] }, { duration: 0.45, delay: M.stagger(0.06), ease: EASE });
+      return new Promise(function (r) { setTimeout(r, 520); });
+    }).then(function () {
+      A(tc, { opacity: [1, 0], y: [0, down ? -18 : 18] }, { duration: 0.4, ease: [0.6, 0, 0.8, 0.4] }).then(function () { tc.style.transform = ""; });
+      return curtain(down, true, 0.65, color);
+    }).then(function () { busy = false; });
+  }
+
+  // ---------- input ----------
+  function canInner(dir) { var inn = $(".inner", scenes[current]); return dir > 0 ? inn.scrollTop + inn.clientHeight < inn.scrollHeight - 2 : inn.scrollTop > 2; }
+  function inScrollable(t) { return t && t.closest && t.closest(".caselist, .emma-card"); }
+  var acc = 0, accT = 0, lockUntil = 0;
+  window.addEventListener("wheel", function (e) {
+    if (loading) { skipLoader(); return; }
+    var dir = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0; if (!dir) return;
+    var sc = inScrollable(e.target);
+    if (sc && (dir > 0 ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 2 : sc.scrollTop > 2)) return;
+    if (canInner(dir)) return;
+    e.preventDefault();
+    var now = performance.now(); if (busy || now < lockUntil) return;
+    acc += e.deltaY; clearTimeout(accT); accT = setTimeout(function () { acc = 0; }, 160);
+    if (Math.abs(acc) > 50) { acc = 0; lockUntil = now + 1700; go(current + dir); }
+  }, { passive: false });
+  window.addEventListener("keydown", function (e) {
+    if (loading) { skipLoader(); return; }
+    if (e.target.closest && e.target.closest("input, textarea")) return;
+    var dir = (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") ? 1 : (e.key === "ArrowUp" || e.key === "PageUp") ? -1 : 0;
+    if (dir) { e.preventDefault(); var inn = $(".inner", scenes[current]); if (canInner(dir)) inn.scrollBy({ top: dir * inn.clientHeight * 0.7, behavior: reduce ? "auto" : "smooth" }); else go(current + dir); }
+    else if (e.key === "Home") go(0); else if (e.key === "End") go(scenes.length - 1);
+    else if (current === 3 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) selectCase((caseIdx + (e.key === "ArrowRight" ? 1 : CASES.length - 1)) % CASES.length);
+  });
+  var ty0 = null, st0 = 0;
+  app.addEventListener("touchstart", function (e) { if (e.target.closest("#emma3d")) { ty0 = null; return; } ty0 = e.touches[0].clientY; st0 = $(".inner", scenes[current]).scrollTop; }, { passive: true });
+  app.addEventListener("touchend", function (e) {
+    if (ty0 === null || loading) return;
+    var dy = ty0 - e.changedTouches[0].clientY; ty0 = null;
+    if (Math.abs(dy) < 60) return;
+    var dir = dy > 0 ? 1 : -1, inn = $(".inner", scenes[current]);
+    if (Math.abs(inn.scrollTop - st0) <= 2 && !canInner(dir)) go(current + dir);
+  }, { passive: true });
+  document.addEventListener("click", function (e) { var g = e.target.closest && e.target.closest("[data-go]"); if (g) { e.preventDefault(); go(+g.getAttribute("data-go")); } });
+
+  // hover and pointer motion
+  if (live) {
+    M.animate("#ring", { rotate: [0, 360] }, { duration: 22, repeat: Infinity, ease: "linear" });
+    var ph = $("#photo");
+    app.addEventListener("pointermove", function (e) {
+      if (current !== 0) return;
+      var nx = e.clientX / window.innerWidth - 0.5, ny = e.clientY / window.innerHeight - 0.5;
+      M.animate(ph, { x: -nx * 22, y: -ny * 14 }, { duration: 1.2, ease: EASE });
+    });
+    $$(".circle, .pill, .pill-light").forEach(function (b) {
+      b.addEventListener("pointermove", function (e) { var r = b.getBoundingClientRect(); M.animate(b, { x: (e.clientX - r.left - r.width / 2) * 0.22, y: (e.clientY - r.top - r.height / 2) * 0.22 }, { duration: 0.3 }); });
+      b.addEventListener("pointerleave", function () { M.animate(b, { x: 0, y: 0 }, { type: "spring", stiffness: 240, damping: 14 }); });
+    });
+    $$(".m, .ctab").forEach(function (r) {
+      r.addEventListener("pointerenter", function () { M.animate(r, { x: r.classList.contains("ctab") ? 6 : 0, y: r.classList.contains("ctab") ? 0 : -4 }, { type: "spring", stiffness: 300, damping: 18 }); });
+      r.addEventListener("pointerleave", function () { M.animate(r, { x: 0, y: 0 }, { type: "spring", stiffness: 300, damping: 20 }); });
+    });
+  }
+
+  // copy email
+  var copyBtn = $("#copyEmail");
+  copyBtn.addEventListener("click", function () {
+    function done() { copyBtn.textContent = "Copied"; setTimeout(function () { copyBtn.textContent = "Copy"; }, 1600); }
+    function fallback() { var r = document.createRange(); r.selectNodeContents($("#email")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = "Selected"; }
+    try { navigator.clipboard.writeText($("#email").textContent).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  // ---------- boot ----------
+  var startIdx = Math.max(0, scenes.findIndex(function (s) { return "#" + s.getAttribute("data-name") === location.hash; }));
+  if (startIdx > 0) { scenes[0].classList.remove("active"); scenes[startIdx].classList.add("active"); current = startIdx; }
+  markNav(current);
+  window.addEventListener("hashchange", function () { var i = scenes.findIndex(function (s) { return "#" + s.getAttribute("data-name") === location.hash; }); if (i >= 0) go(i, false); });
+
+  // ---------- loader ----------
+  // The counter follows real loading (photo, hero image, fonts) but never runs faster than a minimum time.
+  // It ends by fading the navy away, so the line drawing of the photo turns into the photo itself.
+  var booted = false, skipReq = false, loaderDone = false, realDone = 0, realTotal = 3;
+  var heroImgEl = $("#heroImg");
+  var heroReady = new Promise(function (res) { if (heroImgEl.complete && heroImgEl.naturalWidth) res(); else { heroImgEl.addEventListener("load", res); heroImgEl.addEventListener("error", res); } });
+  [photoReady, heroReady, fontsReady].forEach(function (pr) { pr.then(function () { realDone++; }); });
+  function skipLoader() { skipReq = true; }
+  $("#loader").addEventListener("click", skipLoader);
+  function finishLoader() { var l = $("#loader"); if (l) l.remove(); loading = false; loaderDone = true; }
+  function revealHome() {
+    var home = scenes[0];
+    home.classList.remove("pre");
+    A($(".shade", home), { opacity: [0, 1] }, { duration: 1.2, ease: EASE });
+    enter(home, 0);
+  }
+  function endLoader() {
+    if (loaderDone) return;
+    A($$(".loader .ln > span"), { y: ["0%", "-115%"] }, { duration: 0.5, delay: M.stagger(0.04), ease: [0.6, 0, 0.8, 0.4] });
+    A("#loadName", { opacity: [1, 0], y: [0, 24] }, { duration: 0.6, ease: [0.6, 0, 0.8, 0.4] });
+    if (current === 0) {
+      A("#lbg", { opacity: [1, 0] }, { duration: 1.2, delay: 0.2, ease: [0.45, 0, 0.55, 1] });
+      A("#loadScan", { opacity: [1, 0] }, { duration: 0.9, delay: 0.75, ease: [0.45, 0, 0.55, 1] }).then(function () { finishLoader(); revealHome(); });
+    } else {
+      curtain(true, false, 0.7).then(function () { finishLoader(); enter(scenes[current], current); return curtain(true, true, 0.8); });
+    }
+  }
+  function runLoader() {
+    var seen = false;
+    try { seen = sessionStorage.getItem("lg-seen") === "1"; sessionStorage.setItem("lg-seen", "1"); } catch (e) {}
+    var minDur = seen ? 0.7 : 2.2, t1 = performance.now(), shown = 0, pct = $("#pct"), ended = false;
+    A($$(".loader .ln > span"), { y: ["115%", "0%"] }, { duration: 0.7, delay: M.stagger(0.06, { startDelay: 0.1 }), ease: EASE });
+    function tick(now) {
+      if (ended) return;
+      var timeP = Math.min(1, (now - t1) / 1000 / minDur), realP = realDone / realTotal;
+      var target = Math.min(timeP, realP);
+      if (skipReq && realP >= 1) target = 1;
+      shown += (target - shown) * (skipReq ? 0.35 : 0.18);
+      if (target >= 1 && shown > 0.995) shown = 1;
+      pct.textContent = Math.round(shown * 100);
+      reveal.loadScan = shown * 1.08; reveal.loadName = Math.min(1, shown * 1.4);
+      if (shown >= 1) { ended = true; setTimeout(endLoader, skipReq ? 60 : 250); return; }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  if (current === 0 && live) scenes[0].classList.add("pre");
+  Promise.all([photoReady, fontsReady]).then(function () {
+    if (booted) return; booted = true;
+    layoutAll();
+    if (!live) { finishLoader(); enter(scenes[current], current); drawStatic(); return; }
+    requestAnimationFrame(frame);
+    runLoader();
+  });
+  setTimeout(function () {
+    if (!booted) {
+      booted = true; layoutAll();
+      if (live) { requestAnimationFrame(frame); skipReq = true; realDone = realTotal; runLoader(); }
+      else { finishLoader(); enter(scenes[current], current); drawStatic(); }
+    } else if (!loaderDone) { realDone = realTotal; skipReq = true; }
+  }, 8000);
+
+})();
+</script>
+</body>
+</html>
