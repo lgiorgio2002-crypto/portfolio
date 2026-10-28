@@ -2,7 +2,7 @@
 
 AI and strategy consulting portfolio: results and cases from Emma, The Sleep Company (Lisbon, 2026), plus a local AI agent built from scratch.
 
-**Live site:** https://lgiorgio2002-crypto.github.io
+**Live site:** https://lgiorgio2002-crypto.github.io/portfolio/
 
 A single static page, no build step:
 - `index.html` holds the whole site (HTML, CSS, JS)
