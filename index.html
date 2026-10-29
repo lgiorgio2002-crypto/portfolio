@@ -268,6 +268,9 @@ button { font: inherit; color: inherit; }
 .book { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .book a { text-decoration: none; }
 .book .pill { padding: 13px 20px; }
+.mailopts { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.mailopts[hidden] { display: none; }
+.mailopts a { text-decoration: none; }
 .links { margin-top: 14px; display: grid; gap: 8px; }
 .links a { font-size: .95rem; }
 .fine { margin-top: 18px; color: #3b4a5c; }
@@ -449,7 +452,13 @@ button { font: inherit; color: inherit; }
           <div class="line"><span class="val" id="email">lorenzo.giorgio2708@gmail.com</span><button class="copy" type="button" id="copyEmail">Copy</button></div>
           <div class="book">
             <a class="pill" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Interview%20with%20Lorenzo%20Giorgio&amp;details=Interview%20request%20sent%20from%20Lorenzo%20Giorgio%27s%20portfolio.%20Pick%20a%20time%20that%20suits%20you%3B%20Lorenzo%20receives%20the%20invite%20and%20confirms.&amp;add=lorenzo.giorgio2708%40gmail.com" target="_blank" rel="noopener">Schedule an interview</a>
-            <a class="copy" href="mailto:lorenzo.giorgio2708@gmail.com?subject=Interview%20-%20Lorenzo%20Giorgio%20portfolio&amp;body=Hi%20Lorenzo%2C%0A%0AI%20saw%20your%20portfolio%20and%20would%20like%20to%20schedule%20an%20interview.%0A%0A">Email me</a>
+            <button class="copy" type="button" id="mailMe" aria-expanded="false" aria-controls="mailOpts">Email me</button>
+          </div>
+          <div class="mailopts" id="mailOpts" hidden>
+            <span class="label">Open in</span>
+            <a class="copy" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=lorenzo.giorgio2708%40gmail.com&amp;su=Interview%20-%20Lorenzo%20Giorgio%20portfolio&amp;body=Hi%20Lorenzo%2C%0A%0AI%20saw%20your%20portfolio%20and%20would%20like%20to%20schedule%20an%20interview.%0A%0A" target="_blank" rel="noopener">Gmail</a>
+            <a class="copy" href="https://outlook.office.com/mail/deeplink/compose?to=lorenzo.giorgio2708%40gmail.com&amp;subject=Interview%20-%20Lorenzo%20Giorgio%20portfolio&amp;body=Hi%20Lorenzo%2C%0A%0AI%20saw%20your%20portfolio%20and%20would%20like%20to%20schedule%20an%20interview.%0A%0A" target="_blank" rel="noopener">Outlook</a>
+            <a class="copy" href="mailto:lorenzo.giorgio2708@gmail.com?subject=Interview%20-%20Lorenzo%20Giorgio%20portfolio&amp;body=Hi%20Lorenzo%2C%0A%0AI%20saw%20your%20portfolio%20and%20would%20like%20to%20schedule%20an%20interview.%0A%0A">Mail app</a>
           </div>
           <div class="links">
             <a href="https://www.linkedin.com/in/lorenzo-giorgio/" target="_blank" rel="noopener">LinkedIn &mdash; linkedin.com/in/lorenzo-giorgio</a>
@@ -1142,6 +1151,13 @@ button { font: inherit; color: inherit; }
     function done() { copyBtn.textContent = "Copied"; setTimeout(function () { copyBtn.textContent = "Copy"; }, 1600); }
     function fallback() { var r = document.createRange(); r.selectNodeContents($("#email")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = "Selected"; }
     try { navigator.clipboard.writeText($("#email").textContent).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  // email options: mailto alone does nothing without a default mail app, so offer webmail too
+  var mailBtn = $("#mailMe"), mailOpts = $("#mailOpts");
+  mailBtn.addEventListener("click", function () {
+    var open = mailOpts.hidden; mailOpts.hidden = !open; mailBtn.setAttribute("aria-expanded", String(open));
+    if (open && live) A(mailOpts, { opacity: [0, 1], y: [-6, 0] }, { duration: 0.3 });
   });
 
   // ---------- boot ----------
